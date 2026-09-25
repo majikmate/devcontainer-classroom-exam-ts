@@ -1,19 +1,23 @@
-ARG VARIANT="bookworm"
-FROM buildpack-deps:${VARIANT}-curl
+# Standalone exam image for TypeScript/Deno (Debian 13), without Node.js and Go for fast builds
+FROM buildpack-deps:trixie-curl
 
-# --- Accept build-time values ---
-ARG OCI_IMAGE_TITLE="Classroom Environment for TypeScript Tests"
-ARG OCI_IMAGE_DESCRIPTION="Classroom Dev Container for TypeScript / Deno tests — no Node or Go for fast build times"
+# --- Accept build-time values (set by the release workflow) ---
+ARG OCI_IMAGE_TITLE="Classroom Environment for TypeScript Exams"
+ARG OCI_IMAGE_DESCRIPTION="Classroom Dev Container for TypeScript/Deno exams (Debian 13, Deno LTS) with AI features and coding assistance turned off"
 ARG OCI_IMAGE_VERSION="dev"
 ARG OCI_IMAGE_REVISION="unknown"
 ARG OCI_IMAGE_REF_NAME="main"
-ARG OCI_IMAGE_SOURCE="https://github.com/majikmate/devcontainer-classroom-ts-test"
-ARG OCI_IMAGE_URL="https://github.com/majikmate/devcontainer-classroom-ts-test"
-ARG OCI_IMAGE_DOCUMENTATION="https://github.com/majikmate/devcontainer-classroom-ts-test#readme"
+ARG OCI_IMAGE_SOURCE="https://github.com/majikmate/devcontainer-classroom-exam-ts"
+ARG OCI_IMAGE_URL="https://github.com/majikmate/devcontainer-classroom-exam-ts"
+ARG OCI_IMAGE_DOCUMENTATION="https://github.com/majikmate/devcontainer-classroom-exam-ts#readme"
 ARG OCI_IMAGE_CREATED=""
 ARG OCI_IMAGE_AUTHORS="majikmate"
 ARG OCI_IMAGE_VENDOR="majikmate"
 ARG OCI_IMAGE_LICENSES="MIT"
+# Inputs of this image (base image, features, tool versions, configuration) and
+# their fingerprint. The release workflow compares them to decide if a rebuild is needed.
+ARG DEVCONTAINER_INPUTS=""
+ARG DEVCONTAINER_FINGERPRINT=""
 
 # --- Bake them as runtime env (persist in image) ---
 ENV OCI_IMAGE_TITLE="$OCI_IMAGE_TITLE" \
@@ -41,4 +45,6 @@ LABEL org.opencontainers.image.title="$OCI_IMAGE_TITLE" \
       org.opencontainers.image.created="$OCI_IMAGE_CREATED" \
       org.opencontainers.image.authors="$OCI_IMAGE_AUTHORS" \
       org.opencontainers.image.vendor="$OCI_IMAGE_VENDOR" \
-      org.opencontainers.image.licenses="$OCI_IMAGE_LICENSES"
+      org.opencontainers.image.licenses="$OCI_IMAGE_LICENSES" \
+      io.github.majikmate.devcontainer.inputs="$DEVCONTAINER_INPUTS" \
+      io.github.majikmate.devcontainer.fingerprint="$DEVCONTAINER_FINGERPRINT"

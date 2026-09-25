@@ -1,0 +1,59 @@
+# Builds, tests and releases ghcr.io/majikmate/devcontainer-classroom-exam-ts.
+# The logic is in the shared workflow of devcontainer-base:
+# https://github.com/majikmate/devcontainer-base/blob/main/.github/workflows/devcontainer-image.yml
+name: Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  # Hourly check for new versions of the base image, features and Deno
+  schedule:
+    - cron: "27 * * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Release a new version even if no input changed
+        type: boolean
+        default: false
+      bump:
+        description: Version step
+        type: choice
+        options: [auto, patch, minor, major]
+        default: auto
+
+# One release at a time; pull requests cancel their older runs
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'release' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  image:
+    uses: majikmate/devcontainer-base/.github/workflows/devcontainer-image.yml@main
+    permissions:
+      contents: write
+      packages: write
+      actions: write
+    with:
+      image-title: Classroom Environment for TypeScript Exams
+      image-description: Classroom Dev Container for TypeScript/Deno exams (Debian 13, Deno LTS) with AI features and coding assistance turned off
+      # Increase together with a breaking change (2 = Debian 13)
+      major-version: 2
+      force: ${{ inputs.force || false }}
+      bump: ${{ inputs.bump || 'auto' }}
+      smoke-test: |
+        set -e
+        . /etc/os-release
+        echo "debian: ${PRETTY_NAME}"
+        test "${VERSION_CODENAME}" = "trixie"
+        echo "user: $(whoami)"
+        echo "version: deno=$(deno --version | head -n 1 | cut -d ' ' -f 2)"
+        echo "--- No Node.js and no Go (fast builds)"
+        if command -v node || command -v go; then echo "Node.js or Go found"; exit 1; fi
+        echo "--- Deno runs TypeScript and tests"
+        mkdir -p /tmp/smoke && cd /tmp/smoke
+        echo 'const n: number = 1 + 1; console.log(n)' > check.ts
+        deno run check.ts | grep -x 2
+        printf 'Deno.test("sum", () => { if (1 + 1 !== 2) throw new Error("fail"); });\n' > sum_test.ts
+        deno test --allow-all --check=all sum_test.ts

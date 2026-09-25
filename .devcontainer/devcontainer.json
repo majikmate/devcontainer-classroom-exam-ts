@@ -1,221 +1,184 @@
+// Classroom devcontainer for TypeScript / Deno exams.
+// Standalone image on Debian 13 (buildpack-deps:trixie-curl), without Node.js
+// and Go for fast build times. AI features and coding assistance are turned off.
+// Documentation: https://github.com/majikmate/devcontainer-classroom-exam-ts#readme
 {
-    // Classroom devcontainer for TypeScript / Deno tests.
-    // Builds from buildpack-deps:bookworm-curl — no Node or Go features for fast build times.
-    "name": "Classroom Environment for TypeScript Tests",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "args": {
-            "VARIANT": "bookworm",
-            "OCI_IMAGE_TITLE": "${localEnv:OCI_IMAGE_TITLE}",
-            "OCI_IMAGE_DESCRIPTION": "${localEnv:OCI_IMAGE_DESCRIPTION}",
-            "OCI_IMAGE_VERSION": "${localEnv:OCI_IMAGE_VERSION}",
-            "OCI_IMAGE_REVISION": "${localEnv:OCI_IMAGE_REVISION}",
-            "OCI_IMAGE_REF_NAME": "${localEnv:OCI_IMAGE_REF_NAME}",
-            "OCI_IMAGE_SOURCE": "${localEnv:OCI_IMAGE_SOURCE}",
-            "OCI_IMAGE_URL": "${localEnv:OCI_IMAGE_URL}",
-            "OCI_IMAGE_DOCUMENTATION": "${localEnv:OCI_IMAGE_DOCUMENTATION}",
-            "OCI_IMAGE_CREATED": "${localEnv:OCI_IMAGE_CREATED}",
-            "OCI_IMAGE_AUTHORS": "${localEnv:OCI_IMAGE_AUTHORS}",
-            "OCI_IMAGE_VENDOR": "${localEnv:OCI_IMAGE_VENDOR}",
-            "OCI_IMAGE_LICENSES": "${localEnv:OCI_IMAGE_LICENSES}"
-        }
-    },
-    "remoteUser": "dev",
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:2.5.7": {
-            "installZsh": true,
-            "installOhMyZsh": false,
-            "configureZshAsDefaultShell": true,
-            "upgradePackages": false,
-            "username": "dev",
-            "userUid": "1000",
-            "userGId": "1000"
-        },
-        "ghcr.io/devcontainer-community/devcontainer-features/deno.com:1.0.0": {
-            "version": "latest"
-        },
-        "ghcr.io/majikmate/devcontainer-features/locales:1.0.2": {
-            "lang": "en_US.UTF-8"
-        },
-        "ghcr.io/majikmate/devcontainer-features/aliases:1.0.1": {
-            "aliases": "ls=ls -h --color=auto, ll=ls -lah --color=auto, vs=code -r ., grep=grep --color=auto"
-        },
-        "ghcr.io/majikmate/devcontainer-features/git:1.0.0": {},
-        "ghcr.io/majikmate/devcontainer-features/pure-prompt:1.0.3": {},
-        "ghcr.io/majikmate/devcontainer-features/update-os:1.0.0": {}
-    },
-    // update-os must run last
-    "overrideFeatureInstallOrder": [
-        "ghcr.io/devcontainers/features/common-utils",
-        "ghcr.io/devcontainer-community/devcontainer-features/deno.com",
-        "ghcr.io/majikmate/devcontainer-features/locales",
-        "ghcr.io/majikmate/devcontainer-features/aliases",
-        "ghcr.io/majikmate/devcontainer-features/git",
-        "ghcr.io/majikmate/devcontainer-features/pure-prompt",
-        "ghcr.io/majikmate/devcontainer-features/update-os"
-    ],
-    "containerEnv": {
-        "DEBIAN_FRONTEND": "noninteractive"
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                // Markdown preview
-                "bierner.github-markdown-preview",
-                // TypeScript / Deno support
-                "denoland.vscode-deno",
-                // Disable extensions that might interfere
-                "-github.vscode-pull-request-github",
-                "-github.vscode-github-actions",
-                "-ms-vscode-remote.remote-containers",
-                "-dbaeumer.vscode-eslint",
-                // Opt out of Copilot if it is embedded in base image labels or added by a Feature.
-                // NOTE: the "-" prefix does NOT block locally-installed user extensions —
-                // the settings below and remote.extensionKind handle that case.
-                "-github.copilot",
-                "-github.copilot-chat"
-            ],
-            "settings": {
-                // ── Terminal ──────────────────────────────────────────────────────────────
-                "terminal.integrated.defaultProfile.linux": "zsh",
-                "terminal.integrated.profiles.linux": {
-                    "zsh": { "path": "zsh" }
-                },
-
-                // ── Extensions ────────────────────────────────────────────────────────────
-                "extensions.ignoreRecommendations": true,
-
-                // ── Workbench ─────────────────────────────────────────────────────────────
-                "workbench.colorTheme": "Visual Studio Dark",
-                // Prevent startup and install-triggered welcome surfaces from opening.
-                "workbench.startupEditor": "none",
-                "workbench.welcomePage.walkthroughs.openOnInstall": false,
-                // Open markdown files in preview mode
-                "workbench.editorAssociations": {
-                    "*.md": "vscode.markdown.preview.editor"
-                },
-                // Hide the Copilot Chat panel (lives in the secondary sidebar).
-                // NOTE: this is a *default* for new workspaces with no persisted state.
-                // VS Code saves sidebar visibility after each session and restores it on
-                // reconnect, ignoring this setting. It reliably hides the panel on a
-                // fresh Codespace creation; students can manually open it afterwards.
-                "workbench.secondarySideBar.defaultVisibility": "hidden",
-
-                // ── Git ───────────────────────────────────────────────────────────────────
-                "git.autofetch": true,
-                "git.autoStash": true,
-                "git.confirmSync": false,
-                "git.enableSmartCommit": true,
-                "git.postCommitCommand": "sync",
-                "git.rebaseWhenSync": true,
-                "git.rememberPostCommitCommand": false,
-                "git.useEditorAsCommitInput": false,
-
-                // ── Deno ──────────────────────────────────────────────────────────────────
-                "deno.enable": true,
-                "deno.codeLens.testArgs": [
-                    "--allow-all",
-                    "--check=all"
-                ],
-
-                // ── Editor ────────────────────────────────────────────────────────────────
-                "editor.formatOnSave": true,
-                "editor.insertSpaces": true,
-                "editor.tabSize": 4,
-                "editor.detectIndentation": false,
-                "[html]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[css]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[javascript]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[typescript]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[javascriptreact]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[typescriptreact]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[json]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-                "[jsonc]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "denoland.vscode-deno"
-                },
-
-                // ── Hide config folders from students ─────────────────────────────────────
-                "files.exclude": {
-                    "**/.devcontainer": true,
-                    "**/.github": true,
-                    "**/.vscode": true
-                },
-
-                // ── Disable all Copilot / AI features ─────────────────────────────────────
-                // Primary completions kill-switch: disables ghost text for ALL languages (official GitHub Copilot setting)
-                "github.copilot.enable": { "*": false },
-                // Disable next edit suggestions (NES) — confirmed setting in VS Code docs
-                "github.copilot.nextEditSuggestions.enabled": false,
-                // Disable agent mode — confirmed in VS Code v1.99 release notes
-                "chat.agent.enabled": false,
-                // Force Copilot extensions to run on local UI side only (not in container),
-                // preventing them from providing completions even if somehow installed.
-                // This works regardless of whether the extension was installed locally or via defaultExtensions.
-                "remote.extensionKind": {
-                    "github.copilot": ["ui"],
-                    "github.copilot-chat": ["ui"]
-                },
-                // Hide the Copilot/Chat button from the title bar Command Center.
-                // NOTE: "chat.commandCenter.enabled" was removed in VS Code 1.97 (Jan 2026, PR #290119);
-                // it is now silently ignored. The replacement is "chat.agentsControl.enabled" (the new
-                // Agent Status widget) combined with "chat.disableAIFeatures" (nuclear kill-switch added
-                // in 1.99 that hides all AI/Chat UI and prevents the extensions from activating).
-                "chat.agentsControl.enabled": false,
-                "chat.disableAIFeatures": true,
-
-                // ── Suppress native IntelliSense completions ──────────────────────────────
-                // Disables the suggestion popup in code, comments, and strings as you type
-                "editor.quickSuggestions": {
-                    "other": "off",
-                    "comments": "off",
-                    "strings": "off"
-                },
-                // Prevents suggestions from appearing after trigger characters like ".", "(", etc.
-                "editor.suggestOnTriggerCharacters": false,
-                // Disables suggestions derived from words found in open files
-                "editor.wordBasedSuggestions": "off",
-                // Disables ghost text (inline) completions
-                "editor.inlineSuggest.enabled": false,
-                // Disables function signature/parameter hint tooltips
-                "editor.parameterHints.enabled": false,
-                // Removes snippet entries from the suggestion list
-                "editor.snippetSuggestions": "none",
-                // Prevents Enter from accidentally accepting a suggestion
-                "editor.acceptSuggestionOnEnter": "off",
-                // Hides the lightbulb quick fix widget
-                "editor.lightbulb.enabled": "off",
-
-                // ── Exam Color customization ───────────────────────────────────────────────
-                // Customizes the color theme for the exam environment.
-                "workbench.colorCustomizations": {
-                    "titleBar.activeBackground": "#61dafb",
-                    "titleBar.activeForeground": "#15202b",
-                    "titleBar.inactiveBackground": "#61dafb99",
-                    "titleBar.inactiveForeground": "#15202b99"
-                }
-            }
-        }
+  "name": "Classroom Environment for TypeScript Exams",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      // Image metadata, set by the release workflow
+      "OCI_IMAGE_TITLE": "${localEnv:OCI_IMAGE_TITLE}",
+      "OCI_IMAGE_DESCRIPTION": "${localEnv:OCI_IMAGE_DESCRIPTION}",
+      "OCI_IMAGE_VERSION": "${localEnv:OCI_IMAGE_VERSION}",
+      "OCI_IMAGE_REVISION": "${localEnv:OCI_IMAGE_REVISION}",
+      "OCI_IMAGE_REF_NAME": "${localEnv:OCI_IMAGE_REF_NAME}",
+      "OCI_IMAGE_SOURCE": "${localEnv:OCI_IMAGE_SOURCE}",
+      "OCI_IMAGE_URL": "${localEnv:OCI_IMAGE_URL}",
+      "OCI_IMAGE_DOCUMENTATION": "${localEnv:OCI_IMAGE_DOCUMENTATION}",
+      "OCI_IMAGE_CREATED": "${localEnv:OCI_IMAGE_CREATED}",
+      "OCI_IMAGE_AUTHORS": "${localEnv:OCI_IMAGE_AUTHORS}",
+      "OCI_IMAGE_VENDOR": "${localEnv:OCI_IMAGE_VENDOR}",
+      "OCI_IMAGE_LICENSES": "${localEnv:OCI_IMAGE_LICENSES}",
+      "DEVCONTAINER_INPUTS": "${localEnv:DEVCONTAINER_INPUTS}",
+      "DEVCONTAINER_FINGERPRINT": "${localEnv:DEVCONTAINER_FINGERPRINT}"
     }
+  },
+  "remoteUser": "dev",
+  // Features are pinned by major version; the release workflow checks every hour
+  // for new feature versions and for a new Deno LTS release (.github/tool-versions.sh).
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": false,
+      "configureZshAsDefaultShell": true,
+      "upgradePackages": false,
+      "username": "dev",
+      "userUid": "1000",
+      "userGid": "1000"
+    },
+    // Newest Deno LTS release
+    "ghcr.io/majikmate/devcontainer-features/deno:1": {
+      "version": "lts"
+    },
+    "ghcr.io/majikmate/devcontainer-features/locales:1": {
+      "lang": "en_US.UTF-8"
+    },
+    "ghcr.io/majikmate/devcontainer-features/aliases:1": {
+      "aliases": "ls=ls -h --color=auto, ll=ls -lah --color=auto, vs=code -r ., grep=grep --color=auto"
+    },
+    "ghcr.io/majikmate/devcontainer-features/git:1": {},
+    "ghcr.io/majikmate/devcontainer-features/pure-prompt:1": {},
+    "ghcr.io/majikmate/devcontainer-features/update-os:1": {}
+  },
+  // update-os must run last
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/majikmate/devcontainer-features/deno",
+    "ghcr.io/majikmate/devcontainer-features/locales",
+    "ghcr.io/majikmate/devcontainer-features/aliases",
+    "ghcr.io/majikmate/devcontainer-features/git",
+    "ghcr.io/majikmate/devcontainer-features/pure-prompt",
+    "ghcr.io/majikmate/devcontainer-features/update-os"
+  ],
+  "containerEnv": {
+    "DEBIAN_FRONTEND": "noninteractive"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Markdown preview
+        "bierner.github-markdown-preview",
+        // TypeScript / Deno support
+        "denoland.vscode-deno",
+        // Formatter (the extension contains Prettier; no Node.js needed in the image)
+        "esbenp.prettier-vscode",
+        // Disable extensions that might interfere
+        "-github.vscode-pull-request-github",
+        "-github.vscode-github-actions",
+        "-ms-vscode-remote.remote-containers",
+        "-dbaeumer.vscode-eslint"
+        // Copilot is not listed here: Copilot Chat is built into VS Code and
+        // cannot be uninstalled. "chat.disableAIFeatures" below turns it off.
+      ],
+      "settings": {
+        // ── Terminal ──────────────────────────────────────────────────────────────
+        "terminal.integrated.defaultProfile.linux": "zsh",
+
+        // ── Extensions ────────────────────────────────────────────────────────────
+        "extensions.ignoreRecommendations": true,
+
+        // ── Workbench ─────────────────────────────────────────────────────────────
+        "workbench.colorTheme": "Visual Studio Dark",
+        // Prevent startup and install-triggered welcome surfaces from opening.
+        "workbench.startupEditor": "none",
+        "workbench.welcomePage.walkthroughs.openOnInstall": false,
+        // Open markdown files in preview mode
+        "workbench.editorAssociations": {
+          "*.md": "vscode.markdown.preview.editor"
+        },
+        // Hide the secondary side bar (chat). VS Code applies this default only
+        // the first time a workspace is opened.
+        "workbench.secondarySideBar.defaultVisibility": "hidden",
+
+        // ── Git ───────────────────────────────────────────────────────────────────
+        "git.autofetch": true,
+        "git.autoStash": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+        "git.postCommitCommand": "sync",
+        "git.rebaseWhenSync": true,
+        "git.rememberPostCommitCommand": false,
+        "git.useEditorAsCommitInput": false,
+
+        // ── Deno (runtime and language server, not formatter) ────────────────────
+        "deno.enable": true,
+        "deno.codeLens.test": true,
+        "deno.codeLens.testArgs": ["--allow-all", "--check=all"],
+        "deno.testing.args": ["--allow-all", "--check=all"],
+
+        // ── Formatting: Prettier only, standard Prettier style ───────────────────
+        // Prettier is the default formatter for all languages, so VS Code never
+        // uses the Deno formatter.
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        // Same indentation as the standard Prettier output
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.detectIndentation": false,
+
+        // ── Hide config folders from students ─────────────────────────────────────
+        "files.exclude": {
+          "**/.devcontainer": true,
+          "**/.github": true,
+          "**/.vscode": true
+        },
+
+        // ── AI features ───────────────────────────────────────────────────────────
+        // The complete switch: hides all AI and chat UI and disables the built-in
+        // Copilot extension (chat, inline suggestions, next edit suggestions).
+        // Note: when this value comes from the container settings, VS Code disables
+        // Copilot in the student's local VS Code profile as well. To use Copilot
+        // again outside the exam, set "chat.disableAIFeatures" to false in the
+        // local user settings.
+        "chat.disableAIFeatures": true,
+        // Additional layers, in case "chat.disableAIFeatures" is changed
+        "chat.agent.enabled": false,
+        "chat.agentsControl.enabled": "hidden",
+        "github.copilot.enable": { "*": false },
+        "github.copilot.nextEditSuggestions.enabled": false,
+
+        // ── Suppress native IntelliSense completions ──────────────────────────────
+        // Disables the suggestion popup in code, comments, and strings as you type
+        "editor.quickSuggestions": {
+          "other": "off",
+          "comments": "off",
+          "strings": "off"
+        },
+        // Prevents suggestions from appearing after trigger characters like ".", "(", etc.
+        "editor.suggestOnTriggerCharacters": false,
+        // Disables suggestions derived from words found in open files
+        "editor.wordBasedSuggestions": "off",
+        // Disables ghost text (inline) completions
+        "editor.inlineSuggest.enabled": false,
+        // Disables function signature/parameter hint tooltips
+        "editor.parameterHints.enabled": false,
+        // Removes snippet entries from the suggestion list
+        "editor.snippetSuggestions": "none",
+        // Prevents Enter from accidentally accepting a suggestion
+        "editor.acceptSuggestionOnEnter": "off",
+        // Hides the lightbulb quick fix widget
+        "editor.lightbulb.enabled": "off",
+
+        // ── Exam Color customization ───────────────────────────────────────────────
+        // Customizes the color theme for the exam environment.
+        "workbench.colorCustomizations": {
+          "titleBar.activeBackground": "#61dafb",
+          "titleBar.activeForeground": "#15202b",
+          "titleBar.inactiveBackground": "#61dafb99",
+          "titleBar.inactiveForeground": "#15202b99"
+        }
+      }
+    }
+  }
 }
