@@ -5,8 +5,7 @@
 # Layers and their arguments: https://github.com/majikmate/devcontainer-core/blob/main/docs/layers.md
 FROM ghcr.io/majikmate/devcontainer-core:1
 
-# deno: Deno 2.x (the release workflow passes the newest version of the pinned
-# line; at its end of life the build fails and names the supported line)
-ARG DENO_PIN=2
+# deno: Deno 2.x LTS (the feature decides the version; the release workflow
+# passes it; at the end of life of the line the build fails)
 ARG DENO_VERSION
 RUN devenv install deno

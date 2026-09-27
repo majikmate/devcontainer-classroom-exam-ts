@@ -52,14 +52,14 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 | Layer | Content | Version |
 | ----- | ------- | ------- |
 | (devcontainer-core) | Debian 13, user `dev`, zsh, locales, git settings, aliases, Pure prompt, SSH server on port 2222 | see [core](https://github.com/majikmate/devcontainer-core) |
-| `deno` | Deno | Deno 2.x (`DENO_PIN=2`) |
+| `deno` | Deno | Deno 2.x LTS (the release of `deno upgrade lts`) |
 
 - **No Node.js and no Go**, for fast build times. The release workflow checks
   that the commands `node` and `go` do not exist.
-- **Pinned release line:** when Deno publishes a new major release, the
-  nightly check and the build fail; then change the pin in
-  [`.devcontainer/Dockerfile`](.devcontainer/Dockerfile)
-  ([rules](https://github.com/majikmate/devcontainer-features#pinned-release-lines)).
+- **Version:** the feature `deno` decides the line (2) and the channel (lts),
+  not the Dockerfile ([rules](https://github.com/majikmate/devcontainer-features#versions)).
+  When Deno publishes a new major release, the nightly check and the build
+  fail.
 
 ## VS Code
 
@@ -87,8 +87,8 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 ## Releases
 
 - **Nightly check at 01:27 UTC.** A new version is released when an input
-  changes: `.devcontainer`, `README.md`, the digest of `devcontainer-core:1`, or the newest
-  Deno version inside the pinned line. Pending Debian updates and an age above
+  changes: `.devcontainer`, `README.md`, the digest of `devcontainer-core:1`, or the
+  Deno version. Pending Debian updates and an age above
   7 days also lead to a new version.
 - **Manual:** **Actions → Release → Run workflow**. The option `upstream` (on
   by default) first updates core; `force` releases without a change.
