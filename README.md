@@ -29,16 +29,26 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 
 ## What the image contains
 
-- Debian 13 "trixie" (`buildpack-deps:trixie-curl`), user `dev`, zsh with Pure
-  prompt, locales, aliases, Git configuration
-- **Deno** — newest LTS release (feature
-  `ghcr.io/majikmate/devcontainer-features/deno:1`)
-- **No Node.js and no Go**, for fast build times
+The image is [devcontainer-core](https://github.com/majikmate/devcontainer-core)
+plus one layer ([`.devcontainer/Dockerfile`](.devcontainer/Dockerfile)):
+
+- **Core:** Debian 13 "trixie", user `dev`, zsh with Pure prompt, locales,
+  aliases, Git configuration, SSH server on port 2222 (keys of your GitHub
+  account only, see
+  [SSH access](https://github.com/majikmate/devcontainer-core#ssh-access))
+- **Layer `deno`:** Deno, newest LTS release
+- **No Node.js and no Go**, for fast build times. The release workflow checks
+  that the commands `node` and `go` do not exist.
 
 The exact versions of each release are listed in its
 [release notes](https://github.com/majikmate/devcontainer-classroom-exam-ts/releases).
 
 ## VS Code configuration
+
+The settings come from devcontainer-core (terminal zsh, theme, Markdown
+preview, Git), from the layer `deno` (Deno extension and test arguments) and
+from [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json) (all
+exam settings below). The release workflow writes them into the image label.
 
 - **Extensions:** Deno, Prettier, Markdown preview. The extensions for GitHub
   Pull Requests, GitHub Actions, Dev Containers and ESLint are removed.
@@ -69,17 +79,19 @@ The exact versions of each release are listed in its
 ## Automatic releases
 
 The workflow [`.github/workflows/release.yml`](.github/workflows/release.yml)
-uses the shared workflow of `devcontainer-base` (described in its
-[README](https://github.com/majikmate/devcontainer-base#automatic-releases)).
-Every night at 01:27 UTC it checks the inputs of the image: the `.devcontainer`
-folder, the digests of `buildpack-deps:trixie-curl` and of the features, and the
-newest Deno LTS version ([`.github/tool-versions.sh`](.github/tool-versions.sh)).
+uses the shared workflow of `devcontainer-core` (described in its
+[README](https://github.com/majikmate/devcontainer-core#releases)).
+Every night at 01:27 UTC, two hours after devcontainer-core (23:17 UTC), it
+checks the inputs of the image: the `.devcontainer` folder, the digest of
+`ghcr.io/majikmate/devcontainer-core:1`, and the newest Deno LTS version.
 When an input changed, or the image is older than 7 days, it builds, tests and
 releases a new version. Pull requests are only built and tested.
 
 To check at once, open **Actions → Release → Run workflow** and keep the default
-options. It runs the same check. The option `force` releases a new version
-without a change.
+options. With the option `upstream` (on by default), the run first starts the
+Release workflow of devcontainer-core and waits for it, so a new core image is
+included. Then it runs the same check as the nightly run. The option `force`
+releases a new version without a change.
 
 ## Customization
 
