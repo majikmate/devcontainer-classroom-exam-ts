@@ -24,8 +24,10 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 
 - `:2` receives all compatible updates (new Deno 2.x versions, security
   updates). Pin a full version (for example `:2.0.3`) if an exam must not
-  change during the exam period.
-- `:1` is the old Debian 12 "bookworm" image and gets no more updates.
+  change during the exam period. A full version stays available for at
+  least 90 days after its release (see
+  [Kept package versions](#kept-package-versions)).
+- The former `:1` images (Debian 12 "bookworm") are deleted.
 
 ## What the image contains
 
@@ -97,6 +99,20 @@ options. With the option `upstream` (on by default), the run first starts the
 Release workflow of devcontainer-core and waits for it, so a new core image is
 included. Then it runs the same check as the nightly run. The option `force`
 releases a new version without a change.
+
+### Kept package versions
+
+After every release run, the outdated versions of the image package are
+deleted (rules: [Releases](https://github.com/majikmate/devcontainer-core#releases)):
+
+- releases older than 90 days; the newest release and the tags `2`, `2.x` and
+  `latest` are always kept,
+- versions of older major lines and untagged versions that no image uses.
+
+A full version (for example `:2.0.3`) stays available for at least 90 days
+after its release. The manual workflow **Actions → Prune → Run workflow** lists
+(`report`) or deletes (`apply`) the outdated versions at once; the scope
+`all-but-newest` deletes every release except the newest.
 
 ## Customization
 
