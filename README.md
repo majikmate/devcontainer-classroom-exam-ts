@@ -22,7 +22,7 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 }
 ```
 
-- `:2` receives all compatible updates (new Deno LTS versions, security
+- `:2` receives all compatible updates (new Deno 2.x versions, security
   updates). Pin a full version (for example `:2.0.3`) if an exam must not
   change during the exam period.
 - `:1` is the old Debian 12 "bookworm" image and gets no more updates.
@@ -36,7 +36,11 @@ plus one layer ([`.devcontainer/Dockerfile`](.devcontainer/Dockerfile)):
   aliases, Git configuration, SSH server on port 2222 (keys of your GitHub
   account only, see
   [SSH access](https://github.com/majikmate/devcontainer-core#ssh-access))
-- **Layer `deno`:** Deno, newest LTS release
+- **Layer `deno`:** Deno, newest 2.x release (`ARG DENO_PIN=2` in the
+  Dockerfile). When Deno publishes a new major release, the Deno 2 line ends:
+  the nightly check and the build fail with a message, and the pin must be
+  changed (see
+  [Pinned release lines](https://github.com/majikmate/devcontainer-features#pinned-release-lines))
 - **No Node.js and no Go**, for fast build times. The release workflow checks
   that the commands `node` and `go` do not exist.
 
@@ -83,7 +87,8 @@ uses the shared workflow of `devcontainer-core` (described in its
 [README](https://github.com/majikmate/devcontainer-core#releases)).
 Every night at 01:27 UTC, two hours after devcontainer-core (23:17 UTC), it
 checks the inputs of the image: the `.devcontainer` folder, the digest of
-`ghcr.io/majikmate/devcontainer-core:1`, and the newest Deno LTS version.
+`ghcr.io/majikmate/devcontainer-core:1`, and the newest Deno version of the
+pinned line (`DENO_PIN`).
 When an input changed, or the image is older than 7 days, it builds, tests and
 releases a new version. Pull requests are only built and tested.
 
