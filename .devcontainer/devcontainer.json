@@ -25,7 +25,7 @@
     }
   },
   "remoteUser": "dev",
-  // Features are pinned by major version; the release workflow checks every hour
+  // Features are pinned by major version; the release workflow checks every night
   // for new feature versions and for a new Deno LTS release (.github/tool-versions.sh).
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {

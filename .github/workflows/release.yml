@@ -8,9 +8,10 @@ on:
     branches: [main]
     tags: ["v*"]
   pull_request:
-  # Hourly check for new versions of the base image, features and Deno
+  # Nightly check for new versions of the base image, features and Deno
   schedule:
-    - cron: "27 * * * *"
+    - cron: "27 1 * * *"
+  # Manual check ("Run workflow"): the same check as the nightly run, at once
   workflow_dispatch:
     inputs:
       force:

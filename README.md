@@ -71,11 +71,15 @@ The exact versions of each release are listed in its
 The workflow [`.github/workflows/release.yml`](.github/workflows/release.yml)
 uses the shared workflow of `devcontainer-base` (described in its
 [README](https://github.com/majikmate/devcontainer-base#automatic-releases)).
-Every hour it checks the inputs of the image: the `.devcontainer` folder, the
-digests of `buildpack-deps:trixie-curl` and of the features, and the newest
-Deno LTS version ([`.github/tool-versions.sh`](.github/tool-versions.sh)). When
-an input changed, or the image is older than 7 days, it builds, tests and
+Every night at 01:27 UTC it checks the inputs of the image: the `.devcontainer`
+folder, the digests of `buildpack-deps:trixie-curl` and of the features, and the
+newest Deno LTS version ([`.github/tool-versions.sh`](.github/tool-versions.sh)).
+When an input changed, or the image is older than 7 days, it builds, tests and
 releases a new version. Pull requests are only built and tested.
+
+To check at once, open **Actions → Release → Run workflow** and keep the default
+options. It runs the same check. The option `force` releases a new version
+without a change.
 
 ## Customization
 
