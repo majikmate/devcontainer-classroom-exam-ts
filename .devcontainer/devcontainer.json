@@ -1,76 +1,22 @@
 // Classroom devcontainer for TypeScript / Deno exams.
-// Standalone image on Debian 13 (buildpack-deps:trixie-curl), without Node.js
-// and Go for fast build times. AI features and coding assistance are turned off.
+// devcontainer-core and the layer deno add their own settings (user dev, zsh,
+// theme, Markdown preview, git, SSH start, Deno extension and test arguments);
+// this file adds the exam settings. The release workflow writes all of them
+// into the image label devcontainer.metadata.
+// AI features and coding assistance are turned off.
 // Documentation: https://github.com/majikmate/devcontainer-classroom-exam-ts#readme
 {
   "name": "Classroom Environment for TypeScript Exams",
   "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      // Image metadata, set by the release workflow
-      "OCI_IMAGE_TITLE": "${localEnv:OCI_IMAGE_TITLE}",
-      "OCI_IMAGE_DESCRIPTION": "${localEnv:OCI_IMAGE_DESCRIPTION}",
-      "OCI_IMAGE_VERSION": "${localEnv:OCI_IMAGE_VERSION}",
-      "OCI_IMAGE_REVISION": "${localEnv:OCI_IMAGE_REVISION}",
-      "OCI_IMAGE_REF_NAME": "${localEnv:OCI_IMAGE_REF_NAME}",
-      "OCI_IMAGE_SOURCE": "${localEnv:OCI_IMAGE_SOURCE}",
-      "OCI_IMAGE_URL": "${localEnv:OCI_IMAGE_URL}",
-      "OCI_IMAGE_DOCUMENTATION": "${localEnv:OCI_IMAGE_DOCUMENTATION}",
-      "OCI_IMAGE_CREATED": "${localEnv:OCI_IMAGE_CREATED}",
-      "OCI_IMAGE_AUTHORS": "${localEnv:OCI_IMAGE_AUTHORS}",
-      "OCI_IMAGE_VENDOR": "${localEnv:OCI_IMAGE_VENDOR}",
-      "OCI_IMAGE_LICENSES": "${localEnv:OCI_IMAGE_LICENSES}",
-      "DEVCONTAINER_INPUTS": "${localEnv:DEVCONTAINER_INPUTS}",
-      "DEVCONTAINER_FINGERPRINT": "${localEnv:DEVCONTAINER_FINGERPRINT}"
-    }
+    "dockerfile": "Dockerfile"
   },
-  "remoteUser": "dev",
-  // Features are pinned by major version; the release workflow checks every night
-  // for new feature versions and for a new Deno LTS release (.github/tool-versions.sh).
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": true,
-      "installOhMyZsh": false,
-      "configureZshAsDefaultShell": true,
-      "upgradePackages": false,
-      "username": "dev",
-      "userUid": "1000",
-      "userGid": "1000"
-    },
-    // Newest Deno LTS release
-    "ghcr.io/majikmate/devcontainer-features/deno:1": {
-      "version": "lts"
-    },
-    "ghcr.io/majikmate/devcontainer-features/locales:1": {
-      "lang": "en_US.UTF-8"
-    },
-    "ghcr.io/majikmate/devcontainer-features/aliases:1": {
-      "aliases": "ls=ls -h --color=auto, ll=ls -lah --color=auto, vs=code -r ., grep=grep --color=auto"
-    },
-    "ghcr.io/majikmate/devcontainer-features/git:1": {},
-    "ghcr.io/majikmate/devcontainer-features/pure-prompt:1": {},
-    "ghcr.io/majikmate/devcontainer-features/update-os:1": {}
-  },
-  // update-os must run last
-  "overrideFeatureInstallOrder": [
-    "ghcr.io/devcontainers/features/common-utils",
-    "ghcr.io/majikmate/devcontainer-features/deno",
-    "ghcr.io/majikmate/devcontainer-features/locales",
-    "ghcr.io/majikmate/devcontainer-features/aliases",
-    "ghcr.io/majikmate/devcontainer-features/git",
-    "ghcr.io/majikmate/devcontainer-features/pure-prompt",
-    "ghcr.io/majikmate/devcontainer-features/update-os"
-  ],
+  // apt in the terminal does not ask questions
   "containerEnv": {
     "DEBIAN_FRONTEND": "noninteractive"
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        // Markdown preview
-        "bierner.github-markdown-preview",
-        // TypeScript / Deno support
-        "denoland.vscode-deno",
         // Formatter (the extension contains Prettier; no Node.js needed in the image)
         "esbenp.prettier-vscode",
         // Disable extensions that might interfere
@@ -82,40 +28,16 @@
         // cannot be uninstalled. "chat.disableAIFeatures" below turns it off.
       ],
       "settings": {
-        // ── Terminal ──────────────────────────────────────────────────────────────
-        "terminal.integrated.defaultProfile.linux": "zsh",
-
         // ── Extensions ────────────────────────────────────────────────────────────
         "extensions.ignoreRecommendations": true,
 
         // ── Workbench ─────────────────────────────────────────────────────────────
-        "workbench.colorTheme": "Visual Studio Dark",
         // Prevent startup and install-triggered welcome surfaces from opening.
         "workbench.startupEditor": "none",
         "workbench.welcomePage.walkthroughs.openOnInstall": false,
-        // Open markdown files in preview mode
-        "workbench.editorAssociations": {
-          "*.md": "vscode.markdown.preview.editor"
-        },
         // Hide the secondary side bar (chat). VS Code applies this default only
         // the first time a workspace is opened.
         "workbench.secondarySideBar.defaultVisibility": "hidden",
-
-        // ── Git ───────────────────────────────────────────────────────────────────
-        "git.autofetch": true,
-        "git.autoStash": true,
-        "git.confirmSync": false,
-        "git.enableSmartCommit": true,
-        "git.postCommitCommand": "sync",
-        "git.rebaseWhenSync": true,
-        "git.rememberPostCommitCommand": false,
-        "git.useEditorAsCommitInput": false,
-
-        // ── Deno (runtime and language server, not formatter) ────────────────────
-        "deno.enable": true,
-        "deno.codeLens.test": true,
-        "deno.codeLens.testArgs": ["--allow-all", "--check=all"],
-        "deno.testing.args": ["--allow-all", "--check=all"],
 
         // ── Formatting: Prettier only, standard Prettier style ───────────────────
         // Prettier is the default formatter for all languages, so VS Code never
