@@ -94,8 +94,9 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
   by default) first updates core; `force` releases without a change.
 - **Pull requests** build and test both architectures and publish nothing.
 - **Kept versions:** the newest release and the tags `2`, `2.x` and `latest`.
-  Older releases are deleted after 90 days. **Actions → Prune** lists or
-  deletes them at once.
+  Older releases and workflow runs are deleted after 90 days. **Actions →
+  Prune** lists or deletes them at once; the scope `all-but-newest` keeps
+  only the newest release and the newest run of each workflow.
 
 Rules: [Releases](https://github.com/majikmate/devcontainer-core#releases).
 
