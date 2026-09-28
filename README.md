@@ -51,8 +51,8 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 
 | Layer | Content | Version |
 | ----- | ------- | ------- |
-| (devcontainer-core) | Debian 13, user `dev`, zsh, locales, git settings, aliases, Pure prompt, SSH server on port 2222 | see [core](https://github.com/majikmate/devcontainer-core) |
-| `deno` | Deno | Deno 2.x LTS (the release of `deno upgrade lts`) |
+| (devcontainer-core) | Debian 13, user `dev`, zsh, locales, git settings, aliases, Pure prompt, SSH server on port 2222 | see [core](https://github.com/majikmate/devcontainer-core#content); Debian release: [`debianPin`](https://github.com/majikmate/devcontainer-core/blob/main/pkg/layers/os.go#L31-L34) |
+| `deno` | Deno | Deno 2.x LTS, the release of `deno upgrade lts` ([`denoPin`, `denoChannel`](https://github.com/majikmate/devcontainer-features/blob/main/deno/deno.go#L36-L39)) |
 
 - **No Node.js and no Go**, for fast build times. The release workflow checks
   that the commands `node` and `go` do not exist.
