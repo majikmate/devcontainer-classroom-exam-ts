@@ -12,9 +12,9 @@ linux/arm64 ·
 
 ```text
                                                Nightly Content
-devcontainer-features                                  Go library of layers, compiled into devenv
+devcontainer-features                                  Go library of layers, compiled into devcon
   ▼
-devcontainer-core:1                            23:17   Debian 13, devenv, user dev, zsh, SSH server
+devcontainer-core:1                            23:17   Debian 13, devcon, user dev, zsh, SSH server
 ├── devcontainer-base:2                        01:17   + go, build-tools, node, deno, prettier
 │   ├── devcontainer-dev:2                     03:37   + github-cli
 │   ├── devcontainer-classroom-web:2           03:47   classroom settings, AI off
