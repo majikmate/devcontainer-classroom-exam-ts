@@ -12,10 +12,11 @@ on:
     branches: [main]
     tags: ["v*"]
   pull_request:
-  # Nightly check, two hours after devcontainer-core (23:17 UTC): a new core
-  # image or a new Deno LTS release leads to a new release
+  # Nightly check at 23:47 UTC (01:47 CEST), 90 minutes after devcontainer-core
+  # (22:17 UTC): a new core image or a new Deno LTS release leads to a new
+  # release
   schedule:
-    - cron: "27 1 * * *"
+    - cron: "47 23 * * *"
   # Manual check ("Run workflow"): first brings devcontainer-core up to date
   # (option upstream), then runs the same check as the nightly run
   workflow_dispatch:
