@@ -15,7 +15,7 @@ linux/arm64 ·
 devcontainer-features                                  Go library of layers, compiled into devcon
   ▼
 devcontainer-core:1                            22:17   Debian 13, devcon, user dev, zsh, SSH server
-├── devcontainer-base:2                        23:17   + go, build-tools, node, deno, prettier, vscode-server
+├── devcontainer-base:2                        23:17   + go, build-tools, node, deno, prettier
 │   ├── devcontainer-dev:2                     23:57   + github-cli
 │   ├── devcontainer-classroom-web:2           00:07   classroom settings, AI off
 │   └── devcontainer-classroom-web-advanced:2  00:17   + playwright-deps, AI on
