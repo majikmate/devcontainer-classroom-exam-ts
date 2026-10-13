@@ -43,6 +43,12 @@
         // the first time a workspace is opened.
         "workbench.secondarySideBar.defaultVisibility": "hidden",
 
+        // ── Deno ──────────────────────────────────────────────────────────────────
+        // The Deno language server for every folder, also without a deno.json
+        // (the layer deno no longer turns it on, because the Node.js images
+        // need the TypeScript features of VS Code)
+        "deno.enable": true,
+
         // ── Formatting: Prettier only, standard Prettier style ───────────────────
         // Prettier is the default formatter for all languages, so VS Code never
         // uses the Deno formatter.
