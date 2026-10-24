@@ -66,6 +66,8 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 
 - **Extensions:** Deno, Prettier, Markdown preview. GitHub Pull Requests,
   GitHub Actions, Dev Containers and ESLint are removed.
+- **Deno extension on:** the layer `deno` turns the Deno extension off; this
+  image turns it on (`"deno.enable": true`), because the exams run on Deno.
 - **Formatting:** Prettier formats on save with the standard Prettier style
   and 2 spaces. The Prettier extension brings its own Prettier, so Node.js is
   not needed. Deno is the runtime and language server, not the formatter.
