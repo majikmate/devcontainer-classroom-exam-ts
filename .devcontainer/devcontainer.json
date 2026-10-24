@@ -35,6 +35,12 @@
         // ── Extensions ────────────────────────────────────────────────────────────
         "extensions.ignoreRecommendations": true,
 
+        // ── Deno ──────────────────────────────────────────────────────────────────
+        // The layer deno turns the Deno extension off (the courses run on
+        // Node.js). The exams run on Deno, the only runtime of this image, so
+        // this image turns the extension on.
+        "deno.enable": true,
+
         // ── Workbench ─────────────────────────────────────────────────────────────
         // Prevent startup and install-triggered welcome surfaces from opening.
         "workbench.startupEditor": "none",
