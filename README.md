@@ -1,8 +1,8 @@
 # devcontainer-classroom-exam-ts
 
-The image for classroom TypeScript and Deno exercises and exams. AI features
-and all coding assistance are turned off, so students work without AI help,
-autocomplete or other editor guidance.
+The image for classroom TypeScript exercises and exams, with the command `ts`
+(Node.js) and Deno. AI features and all coding assistance are turned off, so
+students work without AI help, autocomplete or other editor guidance.
 
 **Image:** `ghcr.io/majikmate/devcontainer-classroom-exam-ts:2` · linux/amd64,
 linux/arm64 ·
@@ -15,11 +15,11 @@ linux/arm64 ·
 devcontainer-features                                  Go library of layers, compiled into devcon
   ▼
 devcontainer-core:1                            22:17   Debian 13, devcon, user dev, zsh, SSH server
-├── devcontainer-base:2                        23:17   + go, build-tools, node, deno, prettier
+├── devcontainer-base:2                        23:17   + go, build-tools, node, ts, deno, prettier
 │   ├── devcontainer-dev:2                     23:57   + github-cli
 │   ├── devcontainer-classroom-web:2           00:07   + html-validate, classroom settings, AI off
 │   └── devcontainer-classroom-web-advanced:2  00:17   + playwright-deps, html-validate, AI on
-└── devcontainer-classroom-exam-ts:2           23:47   + deno, AI and coding assistance off
+└── devcontainer-classroom-exam-ts:2           23:47   + build-tools, node, ts, deno, AI and coding assistance off
 ```
 
 This repository: **devcontainer-classroom-exam-ts**. Nightly checks in UTC.
@@ -42,8 +42,8 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 }
 ```
 
-- `:2` receives all compatible updates (new Deno 2.x versions, security
-  updates).
+- `:2` receives all compatible updates (new versions of Node.js 26.x, `ts`
+  and Deno 2.x, security updates).
 - A full version (for example `:2.0.6`) stays available until five newer
   releases exist; only the newest 5 releases are kept.
   Use it when the image must not change during an exam period.
@@ -53,24 +53,36 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 | Layer | Content | Version |
 | ----- | ------- | ------- |
 | (devcontainer-core) | Debian 13, user `dev`, zsh, locales, git settings, aliases, Pure prompt, SSH server on port 2222 | see [core](https://github.com/majikmate/devcontainer-core#content); Debian release: [`debianPin`](https://github.com/majikmate/devcontainer-core/blob/main/pkg/layers/os.go#L31-L34) |
+| `build-tools` | make, gcc, g++, python3 (for native npm modules) | Debian packages of the Debian release ([`debianPin`](https://github.com/majikmate/devcontainer-core/blob/main/pkg/layers/os.go#L31-L34)) |
+| `node` | nvm, Node.js, npm (no pnpm, no yarn) | Node.js 26.x, the newest release of the line (LTS from 2026-10-28) ([`nodePin`, `nodeChannel`](https://github.com/majikmate/devcontainer-features/blob/main/node/node.go#L41-L46)) |
+| `ts` | the command `ts` of [`@nimblescape/typescript`](https://www.npmjs.com/package/@nimblescape/typescript) (checks, compiles and runs TypeScript with tsc and Node.js), Tab completion in zsh and bash, VS Code extension nimblescape TypeScript | newest release ([`tsPin`](https://github.com/majikmate/devcontainer-features/blob/main/ts/ts.go#L35-L38)) |
 | `deno` | Deno | Deno 2.x LTS, the release of `deno upgrade lts` ([`denoPin`, `denoChannel`](https://github.com/majikmate/devcontainer-features/blob/main/deno/deno.go#L36-L39)) |
 
-- **No Node.js and no Go**, for fast build times. The release workflow checks
-  that the commands `node` and `go` do not exist.
-- **Version:** the feature `deno` decides the line (2) and the channel (lts),
-  not the Dockerfile ([rules](https://github.com/majikmate/devcontainer-features#versions)).
-  When Deno publishes a new major release, the nightly check and the build
+- **No Go**, for fast build times. The release workflow checks that the
+  command `go` does not exist. Node.js and the build tools are here for the
+  command `ts`.
+- **Versions:** the features decide the lines and channels (Node.js 26, Deno
+  2 LTS, `ts` the newest release), not the Dockerfile
+  ([rules](https://github.com/majikmate/devcontainer-features#versions)).
+  When a pinned line reaches its end of life, the nightly check and the build
   fail.
 
 ## VS Code
 
-- **Extensions:** Deno, Prettier, Markdown preview. GitHub Pull Requests,
-  GitHub Actions, Dev Containers and ESLint are removed.
+- **Extensions:**
+  [nimblescape TypeScript](https://marketplace.visualstudio.com/items?itemName=nimblescape.nimblescape-typescript),
+  Deno, Prettier, Markdown preview. GitHub Pull Requests, GitHub Actions, Dev
+  Containers and ESLint are removed.
+- **ts:** `ts main.ts` checks `main.ts` with `tsc`, compiles it and runs it
+  with Node.js. In the terminals of VS Code, `ts` uses the TypeScript of VS
+  Code, so it needs no network. F5 runs a TypeScript file with the debug type
+  `ts`.
 - **Deno extension on:** the layer `deno` turns the Deno extension off; this
-  image turns it on (`"deno.enable": true`), because the exams run on Deno.
+  image turns it on (`"deno.enable": true`), because the exams still run on
+  Deno.
 - **Formatting:** Prettier formats on save with the standard Prettier style
-  and 2 spaces. The Prettier extension brings its own Prettier, so Node.js is
-  not needed. Deno is the runtime and language server, not the formatter.
+  and 2 spaces. The Prettier extension brings its own Prettier. Deno is the
+  runtime and language server, not the formatter.
 - **Tests:** the Deno test code lens and the Test Explorer run tests with
   `--allow-all --check=all`.
 - **AI features are turned off** (`chat.disableAIFeatures`, plus the settings
@@ -91,7 +103,7 @@ Add `.devcontainer/devcontainer.json` to the exam (template) repository:
 
 - **Nightly check at 23:47 UTC** (01:47 CEST). A new version is released when an input
   changes: `.devcontainer`, `README.md`, the digest of `devcontainer-core:1`, or the
-  Deno version. Pending Debian updates and an age above
+  version of a tool (Node.js, `ts`, Deno). Pending Debian updates and an age above
   7 days also lead to a new version.
 - **Manual:** **Actions → Release → Run workflow**. The option `upstream` (on
   by default) first updates core; `force` releases without a change.

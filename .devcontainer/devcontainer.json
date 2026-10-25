@@ -2,9 +2,10 @@
 // © 2026 Hannes Stauss (scalarion@nimblescape.com)
 // Licensed under the MIT License. See LICENSE in the repository root for details.
 
-// Classroom devcontainer for TypeScript / Deno exams.
-// devcontainer-core and the layer deno add their own settings (user dev, zsh,
-// theme, Markdown preview, git, SSH start, Deno extension and test arguments);
+// Classroom devcontainer for TypeScript exams (ts with Node.js, and Deno).
+// devcontainer-core and the layers node, ts and deno add their own settings
+// (user dev, zsh, theme, Markdown preview, git, SSH start, the extension
+// nimblescape TypeScript, Deno extension and test arguments);
 // this file adds the exam settings. The release workflow writes all of them
 // into the image label devcontainer.metadata.
 // AI features and coding assistance are turned off.
@@ -21,7 +22,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        // Formatter (the extension contains Prettier; no Node.js needed in the image)
+        // Formatter (the extension contains its own Prettier)
         "esbenp.prettier-vscode",
         // Disable extensions that might interfere
         "-github.vscode-pull-request-github",
@@ -37,8 +38,8 @@
 
         // ── Deno ──────────────────────────────────────────────────────────────────
         // The layer deno turns the Deno extension off (the courses run on
-        // Node.js). The exams run on Deno, the only runtime of this image, so
-        // this image turns the extension on.
+        // Node.js). The exams still run on Deno, so this image turns the
+        // extension on until the exams move to ts.
         "deno.enable": true,
 
         // ── Workbench ─────────────────────────────────────────────────────────────
