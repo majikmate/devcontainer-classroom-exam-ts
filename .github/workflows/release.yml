@@ -53,13 +53,13 @@ jobs:
       app-private-key: ${{ secrets.DEVCONTAINER_APP_PRIVATE_KEY }}
     with:
       image-title: Classroom Environment for TypeScript Exams
-      image-description: Classroom Dev Container for TypeScript/Deno exams (Debian 13, Deno LTS) with AI features and coding assistance turned off
+      image-description: Classroom Dev Container for TypeScript exams (Debian 13, Node.js, the command ts, Deno LTS) with AI features and coding assistance turned off
       # Increase together with a breaking change (2 = Debian 13)
       major-version: 2
       # The image in the FROM line of .devcontainer/Dockerfile
       upstream-repositories: devcontainer-core
       update-upstream: ${{ github.event_name == 'workflow_dispatch' && inputs.upstream == true }}
-      # Fast builds: no Node.js and no Go in this image
-      absent-commands: node go
+      # Fast builds: no Go in this image
+      absent-commands: go
       force: ${{ inputs.force || false }}
       bump: ${{ inputs.bump || 'auto' }}
